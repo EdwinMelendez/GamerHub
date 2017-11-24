@@ -11,6 +11,10 @@ api_key = get_key()
 igdb = igdb(api_key)
 
 
+# todo: create query methods for searching keywords
+# todo: create query methods for grabbing related info fields
+
+
 def get_game_by_name(game_name):
 
     r = igdb.games({'search': game_name})

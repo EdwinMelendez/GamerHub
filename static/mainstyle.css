@@ -1,0 +1,15 @@
+h1 {
+    font-size: larger;
+}
+
+label {
+    display: block;
+    float: left;
+    width: 100px;
+    font-weight: bold;
+}
+
+input {
+    border-radius: 3px;
+    margin: 2px;
+}

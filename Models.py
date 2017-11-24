@@ -4,6 +4,9 @@ from flask_sqlalchemy import SQLAlchemy
 # creating SQLAlchemy database
 db = SQLAlchemy(app)
 
+# todo: edit database models to store more information about the games and user
+# todo: add methods for updating profile information i.e.(password & username)
+
 
 # User Model class, sets up database columns and metadata
 class User(db.Model):
