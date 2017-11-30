@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import InputRequired, Length
+from wtforms.validators import InputRequired, Length, DataRequired
 
 
 
@@ -17,3 +17,6 @@ class SignupForm(FlaskForm):
     # confirm_password = PasswordField('Confirm Password:', validators=[InputRequired(), Length(min=6, max=100)])
     email = StringField('Email:', validators=[InputRequired(), Length(min=8, max=50)])
     #submit = SubmitField("register")
+
+class Search(FlaskForm):
+    search = StringField('search', validators=[DataRequired()])

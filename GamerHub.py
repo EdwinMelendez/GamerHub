@@ -126,20 +126,25 @@ def results():
         if 'username' in session:
             c_user = session['username']
             logState = True
-            new_search = Models.Tracked_Games(search_words, c_user)
-            Models.db.session.add(new_search)
-            Models.db.session.commit()
+            if Models.Query.find_game(search_words):
+                print('game already exists')
+
+            else:
+                new_search = Models.Tracked_Games(search_words, c_user)
+                Models.db.session.add(new_search)
+                Models.db.session.commit()
 
             games = []
             result = GameDatabaseApi.generate_search_list(search_words)
             if search_words == None:
-
                 error = 'please try again'
                 return render_template("searcherror.html", searched_word=search_words, logState=logState)
 
             else:
 
-                for game in result:
+
+                for game in result.body:
+                    game = game['name']
                     games.append(game)
 
                 return render_template("results.html", game=games, searched_word=search_words, logState=logState)
