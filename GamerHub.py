@@ -147,6 +147,7 @@ def results():
                     game = game['name']
                     games.append(game)
 
+
                 return render_template("results.html", game=games, searched_word=search_words, logState=logState)
 
 @app.route('/searcherror', methods=['GET', 'POST'])
