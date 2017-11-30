@@ -3,9 +3,12 @@ import Models
 from Forms import SignupForm, LoginForm
 from Logger import Logger
 from flask_login import login_user, logout_user, LoginManager, login_required
+import GameDatabaseApi
+from igdb_api_python.igdb import igdb as igdb
 
 
 app = Flask(__name__)
+# set up logger
 logger = Logger()
 # secret key & sqlalchemy database path
 app.secret_key = 'tiniest little secrets'
@@ -31,15 +34,20 @@ def protected():
 
 
 @app.route("/logout")
-@login_required
 def logout():
+    print('logging out user...')
     logout_user()
-    return "Logged out"
+    return redirect(url_for(index))
 
 
-@app.route('/')
+@login_manager.user_loader
+def load_user(username):
+    return Models.User.query.filter_by(user_name=username).first()
+
+
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    return redirect(url_for('register'))
+    return render_template('index.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -54,7 +62,7 @@ def register():
     elif request.method == 'POST':
 
         if register_form.validate_on_submit():
-            if Models.db.session.query(Models.User).filter_by(username=register_form.username.data).first():
+            if Models.db.session.query(Models.User).filter_by(user_name=register_form.username.data).first():
                 return "User already exists"
             else:
                 # create new user
@@ -62,12 +70,13 @@ def register():
                                        register_form.email.data)
                 Models.db.session.add(new_user)
                 Models.db.session.commit()
-                session['username'] = new_user.username
+                session['username'] = new_user.user_name
                 login_user(new_user)
+                logState = True
 
                 # adding user to session
 
-                return redirect(url_for('dashboard'))
+                return render_template('index.html', logState=logState)
         else:
             return "Form didn't validate"
         # redirects to dashboard
@@ -87,13 +96,14 @@ def login():
 
         if login_form.validate_on_submit():
 
-            user = Models.User.query.filter_by(username=login_form.username.data).first()
+            user = Models.User.query.filter_by(user_name=login_form.username.data).first()
 
             if user:
                 if user.password == login_form.password.data:
                     login_user(user)
-                    session['username'] = user.username
-                    return redirect(url_for('dashboard'))
+                    session['username'] = user.user_name
+                    logState = True
+                    return render_template('index.html', logState=logState)
                 else:
                     return "Incorrect Password or Username"
             else:
@@ -105,6 +115,53 @@ def login():
 
     return render_template('login.html')
 
+
+@app.route('/results', methods=['GET', 'POST'])
+def results():
+
+    if request.method == 'POST':
+
+        search_words = (request.form['search'])
+
+        if 'username' in session:
+            c_user = session['username']
+            logState = True
+            new_search = Models.Tracked_Games(search_words, c_user)
+            Models.db.session.add(new_search)
+            Models.db.session.commit()
+
+            games = []
+            result = GameDatabaseApi.generate_search_list(search_words)
+            if search_words == None:
+
+                error = 'please try again'
+                return render_template("searcherror.html", searched_word=search_words, logState=logState)
+
+            else:
+
+                for game in result:
+                    games.append(game)
+
+                return render_template("results.html", game=games, searched_word=search_words, logState=logState)
+
+@app.route('/searcherror', methods=['GET', 'POST'])
+def searcherror():
+
+    if request.method == 'GET':
+        return render_template('searcherror.html')
+
+
+
+
+
+
+
+
+
+
+
+
+
 # todo: route for profile page
 # todo: route for keyword search result list with clickable titles/google image api
 # todo: dynamic route for clicked result/game api display
@@ -112,4 +169,5 @@ def login():
 
 if __name__ == '__main__':
     init_db()
-    app.run()
+
+    app.run(debug=True)

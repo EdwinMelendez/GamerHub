@@ -1,0 +1,13 @@
+p {
+    height: 7px;
+    font-size: 16px;
+}
+
+table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.sturdy td:nth-child(1) {
+    width: 25%;
+}

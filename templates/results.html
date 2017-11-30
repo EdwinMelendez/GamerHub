@@ -1,0 +1,45 @@
+{% extends 'header.html' %}
+{% block body %}
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='resultstyle.css') }}">
+    </head>
+
+    <form>
+        <table class="sturdy">
+            <td></td>
+            <td>
+
+                <section style="text-align: center">
+                         {{ error }}
+                </section>
+
+                <div id="ng-ng">
+                    <p></p>
+                    <h6 style="text-align: center; font-size: 30px; margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;">Gamer Hub</h6>
+                    <p></p>
+
+                    Game: {{ game[0] }}
+                    <p></p>
+
+                    Game: {{ game[1] }}
+                    <p></p>
+
+                    Game: {{ game[2] }}
+                    <p></p>
+
+                    Game: {{ game[3] }}
+                    <p></p>
+
+                    Game: {{ game[4] }}
+                </div>
+            </td>
+            <td></td>
+        </table>
+    </form>
+ <script>
+    window.onload= function () {
+        document.getElementById("ng-ng").style.display = "none";
+    }
+    </script>
+
+{% endblock %}

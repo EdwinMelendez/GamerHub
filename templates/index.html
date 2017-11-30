@@ -1,10 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>index</title>
-</head>
-<body>
 
-</body>
+<html>
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='homestyle.css') }}">
+    </head>
+    {% if logState %}
+    <!-- if true then-->
+    <button><a href="{{ url_for("logout") }}" class="login"
+               style="font-size:14pt;
+               padding: 90px 20px;
+               border-radius: 10px;
+               text-decoration: none">Logout</a></button>
+    {% else %}
+    <button><a href="/login" class="login"
+               style="font-size:14pt;
+               padding: 90px 20px;
+               border-radius: 10px;
+               text-decoration: none">Login</a></button>
+
+     <button><a href="/register" class="register"
+               style="font-size:14pt;
+               padding: 90px 20px;
+               border-radius: 10px;
+               text-decoration: none">Register</a></button>
+    {% endif %}
+
+    <body>
+        <form action = "{{url_for('results')}}" method = "POST">
+
+        <div class="searchwrap">
+           <div class="search">
+               <p><input type="text" class="searchTerm" placeholder=" Search..." name = "search" pattern="[A-Za-z]+" style="font-size:20pt" required></p>
+
+              <button type="submit" class="searchButton" value="Search">Search</button>
+          </div>
+
+        </div>
+        </form>
+    </body>
 </html>
