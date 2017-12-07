@@ -26,9 +26,8 @@ def init_db():
     Models.db.app = app
     Models.db.create_all()
 
- # holds list of games
-games = []
 
+global_games = []
 
 
 @app.route('/protected')
@@ -146,12 +145,12 @@ def results():
                 return render_template("searcherror.html", searched_word=search_words, logState=logState)
 
             else:
-
+                # holds list of games
+                games = []
                 for game in result.body:
                     game = game['name']
                     games.append(game)
-
-
+                    global_games.append(game)
 
                 return render_template("results.html", game=games, searched_word=search_words, logState=logState)
 
@@ -164,10 +163,10 @@ def gameresults():
         return render_template('gameresults.html')
 
     if request.method == 'POST':
-
+        logState = True
         value = request.form['game']
 
-        for n in games:
+        for n in global_games:
             if value == n:
                 new_game = value
 
@@ -189,6 +188,7 @@ def gameresults():
                 rating = single_game['rating']
                 developers = single_game['developers'][0]['name']
                 genre = single_game['genres'][0]['name']
+                cover_url = single_game['cover']['url']
 
 
 
@@ -202,7 +202,7 @@ def gameresults():
 
 
                 return render_template('gameresults.html', game_name=game_name, summary=summary, rating=rating,
-                                       developers=developers, genre=genre)
+                                       developers=developers, genre=genre, logState=logState, cover=cover_url)
 
 
 

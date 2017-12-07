@@ -53,7 +53,7 @@ def single_search(game_name):
     info = []
     result = igdb.games({'search': game_name,
                          'fields': ["name", "summary", "storyline", "rating",
-                                    "time_to_beat"],
+                                    "time_to_beat", "cover"],
                          'expand': ['developers', 'genres']})
 
     for field in result.body:
