@@ -13,6 +13,33 @@ api_key = get_key()
 igdb = igdb(api_key)
 
 
+def get_platforms(platform_name):
+
+    result = igdb.platforms({'search': platform_name,
+                             'fields': ["games", "name"]})
+    return result
+
+def get_platform_games(plat_name):
+
+    platform = get_platforms(plat_name)
+
+    for plat in platform.body:
+        if plat['name'] == plat_name:
+            game_names = {}
+            game_names.update(plat['games'])
+            return game_names
+
+
+def add_platform_filter(game_name, platform_name):
+
+    result = igdb.games({'search': game_name,
+                         'fields': ['name']})
+    filter = igdb.platforms({'search': platform_name,
+                             'filter': ['name']})
+
+
+
+
 def generate_search_list(game_name):
 
     result = igdb.games({'search': game_name,
@@ -40,7 +67,7 @@ def single_search(game_name):
 
 
 # how to use generate search list
-
+#
 # i = input('Enter Game name: ')
 #
 # r = generate_search_list(i)
@@ -61,5 +88,15 @@ def single_search(game_name):
 #         for val in info.values():
 #             print(val)
 
+# i = input('enter game system name: ')
+#
+# r = get_platform_games(i)
+#
+# print(r.items())
 
 
+
+
+# todo: template inheritance
+
+# todo: filters, search ratings, prices

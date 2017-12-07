@@ -26,6 +26,10 @@ def init_db():
     Models.db.app = app
     Models.db.create_all()
 
+ # holds list of games
+games = []
+
+
 
 @app.route('/protected')
 @login_required
@@ -37,7 +41,7 @@ def protected():
 def logout():
     print('logging out user...')
     logout_user()
-    return redirect(url_for(index))
+    return render_template('index.html')
 
 
 @login_manager.user_loader
@@ -116,6 +120,7 @@ def login():
     return render_template('login.html')
 
 
+
 @app.route('/results', methods=['GET', 'POST'])
 def results():
 
@@ -134,7 +139,7 @@ def results():
                 Models.db.session.add(new_search)
                 Models.db.session.commit()
 
-            games = []
+
             result = GameDatabaseApi.generate_search_list(search_words)
             if search_words == None:
                 error = 'please try again'
@@ -142,13 +147,66 @@ def results():
 
             else:
 
-
                 for game in result.body:
                     game = game['name']
                     games.append(game)
 
 
+
                 return render_template("results.html", game=games, searched_word=search_words, logState=logState)
+
+
+@app.route('/gameresults', methods=['GET', 'POST'])
+def gameresults():
+
+    if request.method == 'GET':
+
+        return render_template('gameresults.html')
+
+    if request.method == 'POST':
+
+        value = request.form['game']
+
+        for n in games:
+            if value == n:
+                new_game = value
+
+                result = GameDatabaseApi.single_search(new_game)
+
+                info = []
+
+                for n in result:
+                    info.append(n)
+
+
+                single_game = info.pop(0)
+
+                for val in single_game.values():
+                    print(val)
+
+                game_name = single_game['name']
+                summary = single_game['summary']
+                rating = single_game['rating']
+                developers = single_game['developers'][0]['name']
+                genre = single_game['genres'][0]['name']
+
+
+
+
+
+
+
+
+
+
+
+
+                return render_template('gameresults.html', game_name=game_name, summary=summary, rating=rating,
+                                       developers=developers, genre=genre)
+
+
+
+
 
 @app.route('/searcherror', methods=['GET', 'POST'])
 def searcherror():
@@ -156,22 +214,11 @@ def searcherror():
     if request.method == 'GET':
         return render_template('searcherror.html')
 
-
-
-
-
-
-
-
-
-
-
-
-
 # todo: route for profile page
 # todo: route for keyword search result list with clickable titles/google image api
 # todo: dynamic route for clicked result/game api display
 # todo: route for homepage/dashboard
+
 
 if __name__ == '__main__':
     init_db()
