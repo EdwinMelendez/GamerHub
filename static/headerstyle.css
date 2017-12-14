@@ -1,3 +1,12 @@
+body,
+html{
+    min-height: 100%;
+}
+body {
+    background-image: url("/images/zelda2.jpg");
+    background-repeat: no-repeat;
+    background-size: auto;
+}
 /* Add a black background color to the top navigation */
 .topnav {
     background-color: #333;
@@ -37,9 +46,12 @@
    padding: 0px 20px;
 }
 
-aside {
-        display: block;
-}
+/*aside {*/
+        /*display: block;*/
+/*}*/
+
+
+
 
 /*Colors error message on login and signup pages.*/
 #signupError, #loginError {

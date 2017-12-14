@@ -1,9 +1,9 @@
-<!DOCTYPE html>
 
 <html>
     <head>
         <link rel="stylesheet" href="{{ url_for('static', filename='homestyle.css') }}">
     </head>
+    {% block body %}
     {% if logState %}
     <!-- if true then-->
     <button><a href="{{ url_for("logout") }}" class="login"
@@ -26,7 +26,10 @@
     {% endif %}
 
     <body>
+
         <form action = "{{url_for('results')}}" method = "POST">
+
+                    <h6 style="text-align: center; font-size: 30px; margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;">Gamer Hub</h6>
 
         <div class="searchwrap">
            <div class="search">
@@ -38,4 +41,5 @@
         </div>
         </form>
     </body>
+{% endblock %}
 </html>

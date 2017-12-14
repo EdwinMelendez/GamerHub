@@ -3,6 +3,7 @@
 {% block body %}
     <h1>REGISTER!</h1>
     <form method="POST" action="/register">
+
         {{ form.hidden_tag() }}
         {{ form.username.label }} {{ form.username(size=50) }}
         <br>

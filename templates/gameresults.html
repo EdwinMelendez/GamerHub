@@ -1,5 +1,6 @@
 {% extends 'header.html' %}
 {% block body %}
+
     <head>
         <link rel="stylesheet" href="{{ url_for('static', filename='resultstyle.css') }}">
     </head>
@@ -17,22 +18,27 @@
                     <p></p>
                     <h6 style="text-align: center; font-size: 30px; margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;">{{ game_name }}</h6>
                     <p></p>
-                    GAME: {{ game_name }}
+                    <b>GAME:</b> {{ game_name }}
                     <br>
                     <br>
-                    SUMMARY: {{ summary }}
+                    <b>SUMMARY:</b> {{ summary }}
                     <br>
                     <br>
-                    RATING: {{ rating }}
+                    <b>RATING:</b> {{ rating }}
                     <br>
                     <br>
-                    DEVELOPERS: {{ developers }}
+                    <b>DEVELOPERS:</b> {{ developers }}
                     <br>
                     <br>
-                    GENRE: {{ genre }}
+                    <b>GENRE:</b> {{ genre }}
                     <br>
                     <br>
-                    COVER ART: <img src="{{ cover }}" height="200" width="200">
+                    <b>COVER ART:</b> <img src="{{ cover }}" height="400" width="400" >
+                    <br>
+                    <br>
+                    <b>SCREENSHOTS:</b> <img src="{{ screenshot_one }}" height="500" width="500"> <img src="{{ screenshots_two }}">
+                    <br>
+
                 </div>
             </td>
             <td></td>

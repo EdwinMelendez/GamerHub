@@ -1,3 +1,12 @@
+body,
+html{
+    min-height: 100%;
+}
+body {
+    background-image: url("/images/zelda2.jpg");
+    background-repeat: no-repeat;
+    background-size: auto;
+}
 p {
     height: 7px;
     font-size: 16px;
@@ -11,3 +20,5 @@ table {
 .sturdy td:nth-child(1) {
     width: 25%;
 }
+
+

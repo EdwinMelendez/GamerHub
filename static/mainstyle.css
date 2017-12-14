@@ -1,3 +1,12 @@
+body,
+html{
+    min-height: 100%;
+}
+body {
+    background-image: url("/images/zelda2.jpg");
+    background-repeat: no-repeat;
+    background-size: auto;
+}
 h1 {
     font-size: larger;
 }
@@ -13,3 +22,4 @@ input {
     border-radius: 3px;
     margin: 2px;
 }
+

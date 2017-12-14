@@ -1,15 +1,12 @@
 from flask import Flask, request, redirect, render_template, url_for, session
 import Models
 from Forms import SignupForm, LoginForm
-from Logger import Logger
 from flask_login import login_user, logout_user, LoginManager, login_required
 import GameDatabaseApi
 from igdb_api_python.igdb import igdb as igdb
 
 
 app = Flask(__name__)
-# set up logger
-logger = Logger()
 # secret key & sqlalchemy database path
 app.secret_key = 'tiniest little secrets'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database/gamerhub.sqlite'
@@ -26,33 +23,33 @@ def init_db():
     Models.db.app = app
     Models.db.create_all()
 
-
+# holds global list of initially searched games
 global_games = []
 
-
+# protected area
 @app.route('/protected')
 @login_required
 def protected():
     return "protected area"
 
-
+# logout route
 @app.route("/logout")
 def logout():
     print('logging out user...')
     logout_user()
     return render_template('index.html')
 
-
+# loads username into login manager
 @login_manager.user_loader
 def load_user(username):
     return Models.User.query.filter_by(user_name=username).first()
 
-
+# index route
 @app.route('/', methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
 
-
+# registration route
 @app.route('/register', methods=['GET', 'POST'])
 def register():
 
@@ -75,6 +72,7 @@ def register():
                 Models.db.session.commit()
                 session['username'] = new_user.user_name
                 login_user(new_user)
+                # keeps track of if user is logged in
                 logState = True
 
                 # adding user to session
@@ -88,7 +86,7 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-
+    # sets up flask login form
     login_form = LoginForm()
 
     if request.method == 'GET':
@@ -121,12 +119,14 @@ def login():
 
 
 @app.route('/results', methods=['GET', 'POST'])
+
 def results():
 
     if request.method == 'POST':
-
+        # grabs search word
         search_words = (request.form['search'])
 
+        # checks database if user had searched for game before, then adds to database if not
         if 'username' in session:
             c_user = session['username']
             logState = True
@@ -138,14 +138,16 @@ def results():
                 Models.db.session.add(new_search)
                 Models.db.session.commit()
 
-
+            # generates list of game object results
             result = GameDatabaseApi.generate_search_list(search_words)
+
+            # if user didn't search a word it reroutes to error page
             if search_words == None:
                 error = 'please try again'
                 return render_template("searcherror.html", searched_word=search_words, logState=logState)
 
             else:
-                # holds list of games
+                # holds list of games, then pushes list of game names to global game list
                 games = []
                 for game in result.body:
                     game = game['name']
@@ -156,6 +158,7 @@ def results():
 
 
 @app.route('/gameresults', methods=['GET', 'POST'])
+
 def gameresults():
 
     if request.method == 'GET':
@@ -165,6 +168,11 @@ def gameresults():
     if request.method == 'POST':
         logState = True
         value = request.form['game']
+
+        '''depending on which game you select, this method matches
+        the first instance of that same game resulting in the exact game you selected.
+        then plugs that single game into the single search method, resulting in info
+        about that single game.'''
 
         for n in global_games:
             if value == n:
@@ -177,32 +185,46 @@ def gameresults():
                 for n in result:
                     info.append(n)
 
-
                 single_game = info.pop(0)
 
                 for val in single_game.values():
                     print(val)
 
+
                 game_name = single_game['name']
-                summary = single_game['summary']
-                rating = single_game['rating']
-                developers = single_game['developers'][0]['name']
-                genre = single_game['genres'][0]['name']
-                cover_url = single_game['cover']['url']
 
-
-
-
-
-
-
-
-
+                if 'summary' not in single_game.keys():
+                    summary = 'missing from database'
+                else:
+                    summary = single_game['summary']
+                if 'rating' not in single_game.keys():
+                    rating = 'missing from database'
+                else:
+                    rating = single_game['rating']
+                if single_game['developers'][0]['name'] == '':
+                    developers = 'missing from database'
+                else:
+                    developers = single_game['developers'][0]['name']
+                if single_game['genres'][0]['name'] == '':
+                    genre = 'missing from database'
+                else:
+                    genre = single_game['genres'][0]['name']
+                if single_game['cover']['url'] == '':
+                    cover_url = 'missing from database'
+                else:
+                    cover_url = single_game['cover']['url']
+                if 'screenshots' not in single_game.keys():
+                    screenshot_one = 'missing from database'
+                    screenshot_two = 'missing from database'
+                else:
+                    screenshot_one = single_game['screenshots'][0]['url']
+                    screenshot_two = single_game['screenshots'][1]['url']
 
 
 
                 return render_template('gameresults.html', game_name=game_name, summary=summary, rating=rating,
-                                       developers=developers, genre=genre, logState=logState, cover=cover_url)
+                                       developers=developers, genre=genre, logState=logState, cover=cover_url, screenshot_one=screenshot_one,
+                                       screenshot_two=screenshot_two)
 
 
 
@@ -213,11 +235,6 @@ def searcherror():
 
     if request.method == 'GET':
         return render_template('searcherror.html')
-
-# todo: route for profile page
-# todo: route for keyword search result list with clickable titles/google image api
-# todo: dynamic route for clicked result/game api display
-# todo: route for homepage/dashboard
 
 
 if __name__ == '__main__':

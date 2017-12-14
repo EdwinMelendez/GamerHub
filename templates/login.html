@@ -2,8 +2,14 @@
 {% extends 'header.html' %}
 
 {% block body %}
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='homestyle.css') }}">
+    </head>
     <h1>LOGIN</h1>
      <form method="POST" action="/login">
+
+
+
         {{ form.hidden_tag() }}
         {{ form.username.label }} {{ form.username(size=50) }}
          <br>

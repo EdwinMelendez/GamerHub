@@ -53,7 +53,7 @@ def single_search(game_name):
     info = []
     result = igdb.games({'search': game_name,
                          'fields': ["name", "summary", "storyline", "rating",
-                                    "time_to_beat", "cover"],
+                                    "time_to_beat", "cover", "screenshots"],
                          'expand': ['developers', 'genres']})
 
     for field in result.body:
@@ -62,41 +62,3 @@ def single_search(game_name):
     return info
 
 
-# todo: create query methods for searching keywords
-# todo: create query methods for grabbing related info fields
-
-
-# how to use generate search list
-#
-# i = input('Enter Game name: ')
-#
-# r = generate_search_list(i)
-#
-# for n in r.body:
-#      print(n['name'])
-
-# how to use single search
-
-
-# i = input('Enter Game name: ')
-#
-# r = single_search(i)
-# for n in r.body:
-#     info = {}
-#     if n['name'] == i:
-#         info.update(n)
-#         for val in info.values():
-#             print(val)
-
-# i = input('enter game system name: ')
-#
-# r = get_platform_games(i)
-#
-# print(r.items())
-
-
-
-
-# todo: template inheritance
-
-# todo: filters, search ratings, prices
