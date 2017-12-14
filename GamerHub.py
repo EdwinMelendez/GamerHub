@@ -1,9 +1,9 @@
-from flask import Flask, request, redirect, render_template, url_for, session
+from flask import Flask, request, render_template, session
 import Models
 from Forms import SignupForm, LoginForm
 from flask_login import login_user, logout_user, LoginManager, login_required
 import GameDatabaseApi
-from igdb_api_python.igdb import igdb as igdb
+
 
 
 app = Flask(__name__)
@@ -36,6 +36,8 @@ def protected():
 @app.route("/logout")
 def logout():
     print('logging out user...')
+    ''' session.clear() clears out logged session user, but breaks code while if user isn't logged in and tries to search'''
+    session.clear()
     logout_user()
     return render_template('index.html')
 
@@ -130,6 +132,7 @@ def results():
         if 'username' in session:
             c_user = session['username']
             logState = True
+
             if Models.Query.find_game(search_words):
                 print('game already exists')
 
@@ -190,29 +193,33 @@ def gameresults():
                 for val in single_game.values():
                     print(val)
 
-
                 game_name = single_game['name']
 
                 if 'summary' not in single_game.keys():
                     summary = 'missing from database'
                 else:
                     summary = single_game['summary']
+
                 if 'rating' not in single_game.keys():
                     rating = 'missing from database'
                 else:
                     rating = single_game['rating']
-                if single_game['developers'][0]['name'] == '':
+
+                if 'developers' not in single_game.keys():
                     developers = 'missing from database'
                 else:
                     developers = single_game['developers'][0]['name']
-                if single_game['genres'][0]['name'] == '':
+
+                if 'genre' not in single_game.keys():
                     genre = 'missing from database'
                 else:
                     genre = single_game['genres'][0]['name']
-                if single_game['cover']['url'] == '':
+
+                if 'cover' not in single_game.keys():
                     cover_url = 'missing from database'
                 else:
                     cover_url = single_game['cover']['url']
+
                 if 'screenshots' not in single_game.keys():
                     screenshot_one = 'missing from database'
                     screenshot_two = 'missing from database'

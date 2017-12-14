@@ -1,0 +1,13 @@
+Welcome to my game search engine!
+
+In order to run this program you will need
+- python 3.6.2
+- refer to requirements.txt for full list of package requirements
+- igdb api key - which can be found here: https://www.igdb.com/api (note: its free to sign up but limited use)
+
+Link to my github repository: https://github.com/EdwinMelendez/GamerHub
+
+Credits:
+
+much of the html and css for the website header and login/search buttons was used from my previous group project.
+ - https://github.com/HeatherDa/Encyclopedia_Application
